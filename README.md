@@ -1,13 +1,22 @@
 # piholeHA
 
+INSTALL
+
     sudo apt update
     sudo apt install -y keepalived
+
+ENABLE PIHOLE on virtual IP
 
     echo "net.ipv4.ip_nonlocal_bind=1" | sudo tee -a /etc/sysctl.d/99-keepalived.conf
     sudo sysctl --system
 
 MASTER
+
+EDIT CONF
+
     sudo nano /etc/keepalived/keepalived.conf
+
+CONF Contents
 
     vrrp_script check_pihole {
         # Verify Pi-hole DNS service is answering queries locally
@@ -38,7 +47,11 @@ MASTER
     }
 
 BACKUP
+
+EDIT CONF
     sudo nano /etc/keepalived/keepalived.conf
+
+CONF Contents
 
     vrrp_script check_pihole {
         script "dig +short +time=1 +tries=1 @127.0.0.1 google.com > /dev/null 2>&1"
@@ -67,11 +80,18 @@ BACKUP
         }
     }
 
+
+ENABLE Services
+
     sudo systemctl enable keepalived
     sudo systemctl restart keepalived
 
+SHOW virt IP is running
+
     ip a show eth0
-    
+
+TEST
+
     sudo systemctl stop keepalived
     sudo systemctl start keepalived
 
